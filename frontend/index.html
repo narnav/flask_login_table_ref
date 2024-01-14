@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+
+
+<body>
+    Welcome
+
+
+    User<input id="username">
+    pwd<input id="password">
+    <button onclick="login()">Login</button>
+    <button onclick="protected()">test</button>
+    <button onclick="secret()">secret</button>
+    <button onclick="pub()">public</button>
+    <button onclick="register()">register</button>
+
+
+    role type:
+    <select id="role">
+        <option value="0">user</option>
+        <option value="1" selected>manager</option>
+        <option value="2">CO</option>
+    </select>
+    <script>
+        const MY_SERVER = "http://127.0.0.1:5000"
+        const login = async () => {
+            res = await axios.post(`${MY_SERVER}/login`, { username: username.value, password: password.value})
+            console.log(res.data);
+            sessionStorage.setItem("access_token", res.data.access_token)
+        }
+
+
+        const register = async () => {
+            res = await axios.post(`${MY_SERVER}/register`, { username: username.value, password: password.value ,role:role.value })
+            console.log(res.data);
+            sessionStorage.setItem("access_token", res.data.access_token)
+        }
+
+
+        const protected = async () => {
+            token = sessionStorage.getItem("access_token")
+            axios.get(`${MY_SERVER}/protected`, {
+                headers: {
+                    Authorization: `Bearer ${token}` // Include the token in the Authorization header
+                }
+            }).then(res => console.log(res.data))
+        }
+
+
+        const secret = async () => {
+            token = sessionStorage.getItem("access_token")
+            axios.get(`${MY_SERVER}/secret`, {
+                headers: {
+                    Authorization: `Bearer ${token}` // Include the token in the Authorization header
+                }
+            }).then(res => console.log(res.data))
+        }
+        const pub = async () => {
+            axios.get(`${MY_SERVER}/pub`).then(res => console.log(res.data))
+        }
+    </script>
+</body>
+
+
+</html>
