@@ -36,7 +36,6 @@ class User(db.Model):
     role = db.Column(db.String(100), nullable=False)
 
 
-
 # Generate a JWT
 def generate_token(user_id):
     expiration = int(time.time()) + 3600  # Set the expiration time to 1 hour from the current time
@@ -95,7 +94,7 @@ def login():
         # Generate an access token with an expiration time
         expires = datetime.timedelta(hours=1)
         access_token = create_access_token(identity=user.id, expires_delta=expires)
-        print(access_token)
+        # print(access_token)
         return jsonify({'access_token': access_token}), 200
     else:
         return jsonify({'message': 'Invalid username or password'}), 401

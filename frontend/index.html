@@ -18,6 +18,7 @@
     User<input id="username">
     pwd<input id="password">
     <button onclick="login()">Login</button>
+    <button onclick="logout()">Logout</button>
     <button onclick="protected()">test</button>
     <button onclick="secret()">secret</button>
     <button onclick="pub()">public</button>
@@ -26,7 +27,7 @@
 
     role type:
     <select id="role">
-        <option value="0">user</option>
+        <option value="0">user (cant add a book)</option>
         <option value="1" selected>manager</option>
         <option value="2">CO</option>
     </select>
@@ -36,6 +37,9 @@
             res = await axios.post(`${MY_SERVER}/login`, { username: username.value, password: password.value})
             console.log(res.data);
             sessionStorage.setItem("access_token", res.data.access_token)
+        }
+        const logout =  () => {
+            sessionStorage.setItem("access_token", "")
         }
 
 
