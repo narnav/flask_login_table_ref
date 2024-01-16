@@ -80,19 +80,6 @@
         };
 
 
-
-        // const register = async () => {
-        //     const fileInput = document.getElementById('fileInput');
-        //     const file = fileInput.files[0];
-        //     const formData = new FormData();
-        //     formData.append('file', file);
-
-        //     res = await axios.post(`${MY_SERVER}/register`, { username: username.value, password: password.value,cat_name:cat_name.value,Email:Email.value, role: role.value })
-        //     console.log(res.data);
-        //     sessionStorage.setItem("access_token", res.data.access_token)
-        // }
-
-
         const protected = async () => {
             token = sessionStorage.getItem("access_token")
             axios.get(`${MY_SERVER}/protected`, {
@@ -101,7 +88,6 @@
                 }
             }).then(res => console.log(res.data))
         }
-
 
         const secret = async () => {
             token = sessionStorage.getItem("access_token")
