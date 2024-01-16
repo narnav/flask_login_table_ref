@@ -12,11 +12,14 @@
 
 
 <body>
-    Welcome
 
 
-    User<input id="username">
-    pwd<input id="password">
+
+    User<input id="username"><br>
+    pwd<input id="password"><br>
+    cat name<input id="cat_name"><br>
+    Email <input id="Email" type="email"><br>
+    <input type="file" id="fileInput"><br>
     <button onclick="login()">Login</button>
     <button onclick="logout()">Logout</button>
     <button onclick="protected()">test</button>
@@ -31,23 +34,60 @@
         <option value="1" selected>manager</option>
         <option value="2">CO</option>
     </select>
+    <div id="gret">Welcome</div>
+    <div id="uimage">image</div>
     <script>
         const MY_SERVER = "http://127.0.0.1:5000"
         const login = async () => {
-            res = await axios.post(`${MY_SERVER}/login`, { username: username.value, password: password.value})
-            console.log(res.data);
+            res = await axios.post(`${MY_SERVER}/login`, { username: username.value, password: password.value })
+            console.log(res.data.image_url);
+            uimage.innerHTML = `<img src=${res.data.image_url}>`
+            gret.innerHTML = "<h1>Welcome mr. " + res.data.username
             sessionStorage.setItem("access_token", res.data.access_token)
         }
-        const logout =  () => {
+        const logout = () => {
             sessionStorage.setItem("access_token", "")
         }
 
-
         const register = async () => {
-            res = await axios.post(`${MY_SERVER}/register`, { username: username.value, password: password.value ,role:role.value })
-            console.log(res.data);
-            sessionStorage.setItem("access_token", res.data.access_token)
-        }
+            try {
+                const fileInput = document.getElementById('fileInput');
+                const file = fileInput.files[0];
+
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('username', username.value);
+                formData.append('password', password.value);
+                formData.append('cat_name', cat_name.value);
+                formData.append('Email', Email.value);
+                formData.append('role', role.value);
+
+                const config = {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                };
+
+                const res = await axios.post(`${MY_SERVER}/register`, formData, config);
+                console.log(res.data);
+                sessionStorage.setItem("access_token", res.data.access_token);
+            } catch (error) {
+                console.error('Error during registration:', error);
+            }
+        };
+
+
+
+        // const register = async () => {
+        //     const fileInput = document.getElementById('fileInput');
+        //     const file = fileInput.files[0];
+        //     const formData = new FormData();
+        //     formData.append('file', file);
+
+        //     res = await axios.post(`${MY_SERVER}/register`, { username: username.value, password: password.value,cat_name:cat_name.value,Email:Email.value, role: role.value })
+        //     console.log(res.data);
+        //     sessionStorage.setItem("access_token", res.data.access_token)
+        // }
 
 
         const protected = async () => {
@@ -73,6 +113,5 @@
         }
     </script>
 </body>
-
 
 </html>
