@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+</head>
+
+
+<body>
+
+
+
+    User<input id="username"><br>
+    pwd<input id="password"><br>
+    cat name<input id="cat_name"><br>
+    Email <input id="Email" type="email"><br>
+    <input type="file" id="fileInput"><br>
+    <button onclick="login()">Login</button>
+    <button onclick="logout()">Logout</button>
+    <button onclick="protected()">test</button>
+    <button onclick="secret()">secret</button>
+    <button onclick="pub()">public</button>
+    <button onclick="register()">register</button>
+    <button onclick="test('waga')">test toast</button>
+    <button onclick="test('baga')">test toast</button>
+    
+
+    role type:
+    <select id="role">
+        <option value="0">user (cant add a book)</option>
+        <option value="1" selected>manager</option>
+        <option value="2">CO</option>
+    </select>
+    <div id="gret">Welcome</div>
+    <div id="uimage">image</div>
+    <script>
+        const MY_SERVER = "http://127.0.0.1:5000"
+        const login = async () => {
+            res = await axios.post(`${MY_SERVER}/login`, { username: username.value, password: password.value })
+            console.log(res.data.image_url);
+            uimage.innerHTML = `<img src=${res.data.image_url}>`
+            gret.innerHTML = "<h1>Welcome mr. " + res.data.username
+            sessionStorage.setItem("access_token", res.data.access_token)
+        }
+        const logout = () => {
+            sessionStorage.setItem("access_token", "")
+        }
+
+        const register = async () => {
+            try {
+                const fileInput = document.getElementById('fileInput');
+                const file = fileInput.files[0];
+
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('username', username.value);
+                formData.append('password', password.value);
+                formData.append('cat_name', cat_name.value);
+                formData.append('Email', Email.value);
+                formData.append('role', role.value);
+
+                const config = {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                };
+
+                const res = await axios.post(`${MY_SERVER}/register`, formData, config);
+                console.log(res.data);
+                sessionStorage.setItem("access_token", res.data.access_token);
+            } catch (error) {
+                console.error('Error during registration:', error);
+            }
+        };
+
+
+
+        // const register = async () => {
+        //     const fileInput = document.getElementById('fileInput');
+        //     const file = fileInput.files[0];
+        //     const formData = new FormData();
+        //     formData.append('file', file);
+
+        //     res = await axios.post(`${MY_SERVER}/register`, { username: username.value, password: password.value,cat_name:cat_name.value,Email:Email.value, role: role.value })
+        //     console.log(res.data);
+        //     sessionStorage.setItem("access_token", res.data.access_token)
+        // }
+
+
+        const protected = async () => {
+            token = sessionStorage.getItem("access_token")
+            axios.get(`${MY_SERVER}/protected`, {
+                headers: {
+                    Authorization: `Bearer ${token}` // Include the token in the Authorization header
+                }
+            }).then(res => console.log(res.data))
+        }
+
+
+        const secret = async () => {
+            token = sessionStorage.getItem("access_token")
+            axios.get(`${MY_SERVER}/secret`, {
+                headers: {
+                    Authorization: `Bearer ${token}` // Include the token in the Authorization header
+                }
+            }).then(res => console.log(res.data))
+        }
+        const pub = async () => {
+            axios.get(`${MY_SERVER}/pub`).then(res => console.log(res.data))
+        }
+        const test = (msg) => {
+            Toastify({
+                text: msg,
+                duration: 3000,
+                destination: "https://github.com/apvarun/toastify-js",
+                newWindow: true,
+                close: true,
+                gravity: "top", // `top` or `bottom`
+                position: "left", // `left`, `center` or `right`
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+                style: {
+                    background: "linear-gradient(to right, #00b09b, #96c93d)",
+                },
+                onClick: function () { } // Callback after click
+            }).showToast();
+        }
+    </script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+</body>
+
+</html>

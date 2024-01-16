@@ -1,7 +1,7 @@
 import datetime 
 import json,time,os
 from functools import wraps
-from flask import Flask, jsonify, request, send_from_directory, url_for
+from flask import Flask, jsonify, render_template, request, send_from_directory, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS, cross_origin
 # from sqlalchemy.orm import class_mapper
@@ -209,7 +209,38 @@ def pub():
 
 @app.route('/', methods=['GET',"POST"])
 def home():
-    return jsonify({'message': f'home'}), 200
+    return render_template("index.html")
+
+@app.route('/getcars', methods=['GET'])
+@jwt_required() 
+def get_cars():
+    try:
+        userid = get_jwt_identity()
+        user_cars = Car.query.filter_by(userid=userid).all()
+
+        cars_list = [model_to_dict(car) for car in user_cars]
+
+        return jsonify({'cars': cars_list}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# @app.route('/addcar', methods=['POST'])
+# @jwt_required() 
+# def addcar():
+#     try:
+#         request_data = request.get_json()
+#         color = request_data['color']
+#         model = request_data['model']
+#         brand = request_data['brand']
+#         userid = get_jwt_identity()
+
+#         new_car = Car(color=color, model=model, brand=brand, userid=userid)
+#         db.session.add(new_car)
+#         db.session.commit()
+
+#         return jsonify({'message': 'Car created successfully'}), 201
+#     except Exception as e:
+#         return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     with app.app_context():
