@@ -209,9 +209,9 @@ def pub():
     return jsonify({'message': f'public area'}), 200
 
 
-@app.route('/', methods=['GET',"POST"])
-def home():
-    return render_template("index.html")
+# @app.route('/', methods=['GET',"POST"])
+# def home():
+#     return render_template("index.html")
 
 @app.route('/getcars', methods=['GET'])
 @jwt_required() 
