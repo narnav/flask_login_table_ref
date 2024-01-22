@@ -9,11 +9,7 @@
     <title>Document</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
-
-
 <body>
-
-
 
     User<input id="username"><br>
     pwd<input id="password"><br>
@@ -26,7 +22,7 @@
     <button onclick="secret()">secret</button>
     <button onclick="pub()">public</button>
     <button onclick="register()">register</button>
-
+<hr>
 
     role type:
     <select id="role">
@@ -36,11 +32,33 @@
     </select>
     <div id="gret">Welcome</div>
     <div id="uimage">image</div>
+    <h1>Car details</h1>
+    Color<input id="clrrrr"><br>
+    brand<input id="brand"><br>
+    model <input id="model" ><br>
+    <button onclick="addCar()">Ad a car</button>
     <script>
         const MY_SERVER = "http://127.0.0.1:5000"
+
+        const addCar = async () => {
+            console.log(clrrrr.value,brand.value,model.value);
+
+    //         color = request_data['color']
+    // model = request_data['model']
+    // brand = request_data['brand']
+
+            token = sessionStorage.getItem("access_token")
+            axios.post(`${MY_SERVER}/addcar`, { color: clrrrr.value, brand: brand.value,model:model.value }, {
+                headers: {
+                    Authorization: `Bearer ${token}` // Include the token in the Authorization header
+                }
+            }).then(res => console.log(res.data))
+        }
+
+
         const login = async () => {
             res = await axios.post(`${MY_SERVER}/login`, { username: username.value, password: password.value })
-            console.log(res.data.image_url);
+            console.log(res.data);
             uimage.innerHTML = `<img src=${res.data.image_url}>`
             gret.innerHTML = "<h1>Welcome mr. " + res.data.username
             sessionStorage.setItem("access_token", res.data.access_token)
